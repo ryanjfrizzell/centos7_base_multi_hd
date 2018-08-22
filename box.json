@@ -1,0 +1,40 @@
+{
+	"variables": {
+		"iso_url": "http://mirrordenver.fdcservers.net/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+		"iso_checksum": "714acc0aefb32b7d51b515e25546835e55a90da9fb00417fbee2d03a62801efd",
+		"iso_checksum_type": "sha256",
+        "guest_add_path": "~/Downloads/VBoxGuestAdditions_5.2.12.iso"
+	},
+	"builders": [{
+		"type": "virtualbox-iso",
+		"boot_command": [
+			"<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+		],
+		"boot_wait": "10s",
+		"disk_size": 81920,
+		"guest_os_type": "RedHat_64",
+		"headless": true,
+		"http_directory": "http",
+		"iso_urls": [
+			"{{ user `iso_url` }}"
+		],
+		"iso_checksum_type": "{{ user `iso_checksum_type` }}", 
+		"iso_checksum": "{{ user `iso_checksum`}}",
+		"ssh_username": "vagrant",
+		"ssh_password": "vagrant",
+		"ssh_port": 22,
+		"ssh_wait_timeout": "10000s",
+		"shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
+		"guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+		"virtualbox_version_file": ".vbox_version",
+		"vm_name": "packer-centos-7-x86_64",
+		"vboxmanage": [
+			[ "createhd", "--format", "VMDK", "--filename", "disk2.vmdk", "--variant", "STREAM", "--size", "1" ],
+			[ "storagectl", "{{.Name}}", "--name", "SATA Controller", "--add", "sata", "--controller", "IntelAHCI"],
+			[ "storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "1", "--type", "hdd", "--medium", "disk2.vmdk" ], 
+			[ "modifyvm", "{{.Name}}", "--memory", "512"],
+			[ "modifyvm", "{{.Name}}", "--cpus", "1"]
+		]
+	}],
+    "post-processors": ["vagrant"]
+}
