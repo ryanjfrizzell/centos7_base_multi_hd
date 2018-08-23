@@ -1,5 +1,8 @@
 output-virtualbox-iso/*
 packer_cache/*
+.DS_Store
+.env
+.env.sh
 *.box
 *.iso
 *.vmdk
