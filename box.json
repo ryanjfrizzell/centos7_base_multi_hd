@@ -1,7 +1,7 @@
 {
     "variables": {
         "this_box_image": "cent7_1804_extradisk_x86_64",
-        "this_box_version": "0.0.1",
+        "this_box_version": "0.0.3",
         "upload_token": "{{env `cloud_token`}}",
         "iso_url": "http://mirrordenver.fdcservers.net/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
         "iso_checksum": "714acc0aefb32b7d51b515e25546835e55a90da9fb00417fbee2d03a62801efd",
@@ -42,11 +42,12 @@
         [
             {
                 "type": "vagrant",
-                "output": "{{ user `this_box_image` }}_{{.Provider}}.box"
+                "compression_level": "9",
+                "output": "output/{{user `this_box_image`}}_{{.Provider}}.box"
             }, 
             {
                 "type": "vagrant-cloud",
-                "box_tag": "ryfrizzell/{{ user `box_image` }}",
+                "box_tag": "ryfrizzell/{{user `this_box_image`}}",
                 "access_token": "{{user `upload_token`}}",
                 "version": "{{user `this_box_version`}}"
             }
